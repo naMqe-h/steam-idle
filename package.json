@@ -1,0 +1,19 @@
+{
+  "name": "steam-idle",
+  "version": "0.0.1",
+  "description": "Steam Hour Idle",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "author": "naMqe",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20",
+    "steam-user": "^4.26.1"
+  }
+}
