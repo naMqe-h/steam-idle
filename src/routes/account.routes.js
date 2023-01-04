@@ -4,19 +4,9 @@ const SteamUser = require('steam-user')
 
 const activeUsers = {}
 
-const steamStatus = {
-    "Offline": 0,
-	"Online": 1,
-	"Busy": 2,
-	"Away": 3,
-	"Snooze": 4,
-	"LookingToTrade": 5,
-	"LookingToPlay": 6,
-	"Invisible": 7,
-}
-
 router.post('/start', async (req, res) => {
     const accountsStatus = {}
+
     try {
         const { body } = req
 

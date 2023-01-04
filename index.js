@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const express = require('express')
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 
 const app = express()
 
@@ -21,5 +22,11 @@ app.use('/', (req, res) => {
 })
 
 app.listen(process.env.PORT, async () => {
+    mongoose.set("strictQuery", false);
+    await mongoose.connect(process.env.MONGO_URI, {
+        keepAlive: true,
+        dbName: 'steam-idle'
+    }, () => console.log('Connected to MongoDB'))
+    
     console.log(`Listening on port ${process.env.PORT}`)
 })
