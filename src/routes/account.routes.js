@@ -2,25 +2,45 @@ const express = require('express')
 const router = express.Router()
 const SteamUser = require('steam-user')
 
+const activeUsers = {}
+
+const steamStatus = {
+    "Offline": 0,
+	"Online": 1,
+	"Busy": 2,
+	"Away": 3,
+	"Snooze": 4,
+	"LookingToTrade": 5,
+	"LookingToPlay": 6,
+	"Invisible": 7,
+}
+
 router.post('/start', async (req, res) => {
-    const accounts = {}
+    const accountsStatus = {}
     try {
         const { body } = req
 
         body.forEach(userDetails => {
-            const user = new SteamUser()
+            const user = new SteamUser({ enablePicsCache: true, })
+            activeUsers[userDetails.accountName] = user
             user.on('error', (error) => {
-                accounts[userDetails.accountName] = error.message
-                console.log(`${userDetails.accountName} - ${error.message}`)
+                accountsStatus[userDetails.accountName] = {
+                    success: false,
+                    status: error.message
+                }
             })
     
             user.logOn(userDetails)
             
             user.on('loggedOn', async () => {
                 console.log(`${userDetails.accountName} logged in`)
-                accounts[userDetails.accountName] = 'logged in'
-                user.setPersona(1)
+                user.setPersona(userDetails.steamStatus)
                 user.gamesPlayed(userDetails.games, true)
+                // const apps = await user.getUserOwnedApps(`[U:1:${user.steamID.accountid}]`)
+                accountsStatus[userDetails.accountName] = {
+                    success: true,
+                    status: 'Logged in'
+                }
             })
         })
         
@@ -29,25 +49,43 @@ router.post('/start', async (req, res) => {
     }
     
     const sendAnswer = setInterval(() => {
-        if(Object.keys(accounts).length === req.body.length) {
-            res.status(200).json(accounts)
-
+        if(Object.keys(accountsStatus).length === req.body.length) {
+            res.status(200).json(accountsStatus)
             return clearInterval(sendAnswer)
         }
     }, 1000)
 })
 
 router.post('/stop', async (req, res) => {
-    const accounts = {}
+    const accountsStatus = {}
     try {
         const { body } = req
 
-        //! stop
+        body.forEach((userDetails) => {
+            if(activeUsers[userDetails.accountName]) {
+                activeUsers[userDetails.accountName].logOff()
+                accountsStatus[userDetails.accountName] = {
+                    success: true,
+                    status: 'Logged out'
+                }
+            } else {
+                accountsStatus[userDetails.accountName] = {
+                    success: false,
+                    status: 'The account was not logged in'
+                }
+            }
+        })
         
     } catch (err) {
         console.log("🚀 ~ file: account.routes.js:8 ~ router.post ~ err", err.message)
     }
-    res.send('ok')
+
+    const sendAnswer = setInterval(() => {
+        if(Object.keys(accountsStatus).length === req.body.length) {
+            res.status(200).json(accountsStatus)
+            return clearInterval(sendAnswer)
+        }
+    }, 1000)
 })
 
 module.exports = router
