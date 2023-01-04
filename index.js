@@ -16,6 +16,8 @@ app.use((req, res, next) => {
 app.use(bodyParser.json())
 
 app.use('/account', require('./src/routes/account.routes'))
+app.use('/idle', require('./src/routes/idle.routes'))
+app.use('/user', require('./src/routes/user.routes'))
 
 app.use('/', (req, res) => {
     res.send('Steam Idle')
