@@ -10,13 +10,18 @@ const reqArray = {
     required: true
 }
 
+
 const userSchema = new mongoose.Schema({
     userId: reqString,
-    name: reqString,
+    username: reqString,
     email: reqString,
     password: reqString,
     subscription: reqString,
-    steamAccounts: reqArray
+    steamAccounts: reqArray,
+    referrer: {
+        type: String,
+        required: false
+    },
 })
 
 module.exports = mongoose.model('User', userSchema, 'users')
