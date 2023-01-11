@@ -6,6 +6,7 @@ const { Server } = require("socket.io");
 const startIdle = require('./src/functions/idle/startIdle');
 const stopIdle = require('./src/functions/idle/stopIdle');
 const createAccount = require('./src/functions/account/createAccount');
+const loginAccount = require('./src/functions/account/loginAccount');
 
 const app = express()
 const httpServer = require('http').createServer(app);
@@ -25,6 +26,9 @@ io.on("connection", socket => {
     //! Login section
     socket.on('create-account', (args) => {
         createAccount(socket, args)
+    })
+    socket.on('login-account', (args) => {
+        loginAccount(socket, args)
     })
 
     //! Idle section
