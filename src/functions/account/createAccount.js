@@ -3,7 +3,6 @@ const uniqid = require('uniqid')
 
 
 module.exports = createAccount = async (socket, body) => {
-    console.log(body)
     const data = await userSchema.findOne({ email: body.email })
 
     if(data) return socket.emit("create-account-email-exist", {
