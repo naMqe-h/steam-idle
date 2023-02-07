@@ -2,7 +2,6 @@ const userSchema = require("../../schemas/user-schema")
 const bcrypt = require('bcryptjs')
 
 module.exports = loginAccount = async (socket, body) => {
-    
     const user = await userSchema.findOne({ email: body.email })
 
     if(!user) return socket.emit("login-account-email-not-exist", {
@@ -19,7 +18,8 @@ module.exports = loginAccount = async (socket, body) => {
 
     return socket.emit('login-account-success', {
         success: true,
-        content: 'You have successfully logged in'
+        content: 'You have successfully logged in',
+        user
     })
 
 }
