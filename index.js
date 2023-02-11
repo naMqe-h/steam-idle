@@ -8,6 +8,7 @@ const stopIdle = require('./src/functions/idle/stopIdle');
 const createAccount = require('./src/functions/account/createAccount');
 const loginAccount = require('./src/functions/account/loginAccount');
 const addSteamAccount = require('./src/functions/steamAccount/addSteamAccount');
+const getSteamAccounts = require('./src/functions/steamAccount/getSteamAccounts');
 
 const app = express()
 const httpServer = require('http').createServer(app);
@@ -32,9 +33,14 @@ io.on("connection", socket => {
         loginAccount(socket, args)
     })
 
-    //! Add Steam Account section
+    //! Steam Account section
     socket.on('add-steam-account', (args) => {
         addSteamAccount(socket, args)
+    })
+
+    //! Steam Account section
+    socket.on('get-user-steam-accounts', (args) => {
+        getSteamAccounts(socket, args)
     })
 
     //! Idle section
